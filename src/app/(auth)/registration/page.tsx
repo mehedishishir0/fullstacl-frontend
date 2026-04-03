@@ -1,10 +1,10 @@
 import React from 'react'
-import LoginPage from './_components/LoginPage'
+import Registration from './_components/Registration'
 
 const page = () => {
   return (
-    <div className=''>
-        <LoginPage/>
+    <div >
+        <Registration/>
     </div>
   )
 }

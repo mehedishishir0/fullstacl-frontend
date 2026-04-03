@@ -1,139 +1,3 @@
-// import React from "react";
-// import Image from "next/image";
-// import Link from "next/link";
-// import { Button } from "@/components/ui/button";
-// import { Input } from "@/components/ui/input";
-// import { Label } from "@/components/ui/label";
-
-// export default function LoginPage() {
-//   return (
-//     <main className="min-h-screen w-full flex flex-col lg:flex-row bg-[#F0F2F5] overflow-hidden">
-
-//       {/* Left Side: Illustration & Background Shapes */}
-//       <div className="hidden lg:flex lg:w-3/5 my-20 xl:w-[65%] relative bg-[#F8FAFC] items-center justify-center p-12 overflow-hidden">
-//         {/* Background Decorative Shapes */}
-//         <div className="absolute top-0 left-0 w-full h-full pointer-events-none">
-//           <Image width={100} height={100} src="/images/shape1.svg" alt="" className="absolute top-0 left-0 opacity-40 w-1/3" />
-//           <Image width={100} height={100}  src="/images/shape2.svg" alt="" className="absolute bottom-0 left-10 opacity-40 w-1/4" />
-//         </div>
-
-//         {/* Main Illustration */}
-//         <div className="relative z-10 w-full max-w-2xl">
-//           <Image
-//             src="/images/login.png"
-//             alt="Illustration"
-//             width={800}
-//             height={600}
-//             className="object-contain"
-//             priority
-//           />
-//         </div>
-//       </div>
-
-//       {/* Right Side: Login Form */}
-//       <div className="w-full lg:w-2/5 xl:w-[35%] flex items-center justify-center p-6 sm:p-12 md:p-20 lg:p-12 xl:p-24 relative">
-//         {/* Mobile/Tablet Background Shape (Optional) */}
-//         <Image width={100} height={100} src="/images/shape3.svg" alt="" className="absolute right-0 bottom-0 opacity-10 lg:opacity-20 -z-10 w-40" />
-
-//         <div className="w-full max-w-[400px] flex flex-col items-center text-center">
-//           {/* Logo */}
-//           <div className="mb-8">
-//             <Image
-//               src="/images/logo.svg"
-//               alt="BuddyScript"
-//               width={180}
-//               height={45}
-//               className="h-10 w-auto"
-//             />
-//           </div>
-
-//           <div className="mb-10">
-//             <p className="text-slate-500 text-sm mb-1">Welcome back</p>
-//             <h1 className="text-2xl font-bold text-slate-900 tracking-tight">
-//               Login to your account
-//             </h1>
-//           </div>
-
-//           {/* Google Button */}
-//           <Button
-//             variant="outline"
-//             className="w-full h-14 mb-8 flex items-center justify-center gap-3 border-slate-100 rounded-xl hover:bg-slate-50 transition-colors shadow-sm"
-//           >
-//             <Image src="/images/google.svg" alt="Google" width={20} height={20} />
-//             <span className="text-slate-700 font-medium">Or sign-in with google</span>
-//           </Button>
-
-//           {/* Separator */}
-//           <div className="relative w-full mb-8">
-//             <div className="absolute inset-0 flex items-center">
-//               <span className="w-full border-t border-slate-100"></span>
-//             </div>
-//             <div className="relative flex justify-center text-sm">
-//               <span className="bg-white px-4 text-slate-400">Or</span>
-//             </div>
-//           </div>
-
-//           {/* Form */}
-//           <form className="w-full space-y-6 text-left">
-//             <div className="space-y-2">
-//               <Label htmlFor="email" className="text-slate-700 font-medium ml-1">Email</Label>
-//               <Input
-//                 id="email"
-//                 type="email"
-//                 className="h-14 bg-[#F8FAFC] border-none rounded-xl focus-visible:ring-blue-500 transition-all"
-//               />
-//             </div>
-
-//             <div className="space-y-2">
-//               <Label htmlFor="password" className="text-slate-700 font-medium ml-1">Password</Label>
-//               <Input
-//                 id="password"
-//                 type="password"
-//                 className="h-14 bg-[#F8FAFC] border-none rounded-xl focus-visible:ring-blue-500 transition-all"
-//               />
-//             </div>
-
-//             <div className="flex items-center justify-between pt-2">
-//               <div className="flex items-center space-x-2">
-//                  {/* Using Radio as per your design image */}
-//                 <div className="flex items-center space-x-2">
-//                   <input
-//                     type="radio"
-//                     id="remember"
-//                     className="w-4 h-4 text-blue-600 border-slate-300 focus:ring-blue-500"
-//                     checked
-//                     readOnly
-//                   />
-//                   <Label htmlFor="remember" className="text-sm font-medium text-slate-500 cursor-pointer">
-//                     Remember me
-//                   </Label>
-//                 </div>
-//               </div>
-//               <Link
-//                 href="#"
-//                 className="text-sm font-medium text-blue-400 hover:text-blue-600 transition-colors"
-//               >
-//                 Forgot password?
-//               </Link>
-//             </div>
-
-//             <Button className="w-full h-14 mt-4 bg-[#3B82F6] hover:bg-blue-700 text-white rounded-xl font-semibold text-lg shadow-lg shadow-blue-100">
-//               Login now
-//             </Button>
-//           </form>
-
-//           <p className="mt-10 text-slate-500 text-sm">
-//             Dont have an account?{" "}
-//             <Link href="#" className="text-blue-500 font-bold hover:underline">
-//               Create New Account
-//             </Link>
-//           </p>
-//         </div>
-//       </div>
-//     </main>
-//   );
-// }
-
 "use client";
 
 import Image from "next/image";
@@ -144,14 +8,38 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Separator } from "@/components/ui/separator";
+import { useForm, Controller } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import z from "zod";
+
+const formSchema = z.object({
+  email: z.string().email({ message: "Invalid email address" }),
+  password: z
+    .string()
+    .min(6, { message: "Password should be at least 6 characters." }),
+  rememberMe: z.boolean().optional(),
+});
+
+type FormType = z.infer<typeof formSchema>;
 
 export default function LoginPage() {
-  const [rememberMe, setRememberMe] = useState(true);
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
 
-  const handleLogin = () => {
-    console.log("Login", { email, password, rememberMe });
+  const {
+    handleSubmit,
+    control,
+    formState: { errors },
+  } = useForm<FormType>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      email: "",
+      password: "",
+      rememberMe: true,
+    },
+  });
+
+  const onSubmit = (data: FormType) => {
+    console.log("Login Data:", data);
   };
 
   const handleGoogleLogin = () => {
@@ -159,48 +47,37 @@ export default function LoginPage() {
   };
 
   return (
-    <section className="relative min-h-screen py-10 w-full overflow-hidden bg-[#F0F2F5] flex items-center">
-      {/* Shape One — top left */}
-      <div className="pointer-events-none absolute left-0 -top-10 z-0">
-        <Image
-          src="/images/shape1.svg"
-          alt=""
-          width={150}
-          height={200}
-          className="block "
-        />
-      </div>
+    <section className="relative min-h-screen w-full overflow-x-hidden bg-[#F0F2F5] flex items-center justify-center py-10 lg:py-20">
+      {/* Background Shapes - Hidden on small mobile to prevent layout issues, optimized positioning */}
 
-    {/* Shape two — right side */}
-      <div className="pointer-events-none absolute right-5 -top-0 z-0">
+      <div className="pointer-events-none absolute left-0 -top-10 z-0 opacity-50 lg:opacity-100">
+        <Image src="/images/shape1.svg" alt="" width={200} height={200} />
+      </div>
+      <div className="pointer-events-none absolute -right-10 -top-10 z-0 hidden sm:block">
         <Image
           src="/images/shape2.svg"
           alt=""
-          width={450}
+          width={550}
           height={300}
-          className="block "
+          className="w-[300px] lg:w-[550px]"
         />
       </div>
-
-      {/* Shape three — bottom left */}
-      <div className="pointer-events-none absolute -bottom-0 right-0 z-0">
+      <div className="pointer-events-none absolute bottom-0 right-0 lg:right-[400px] z-0 hidden md:block">
         <Image
           src="/images/shape3.svg"
           alt=""
           width={500}
           height={600}
-          className="block "
+          className="w-[300px] lg:w-[500px]"
         />
       </div>
 
-  
-
-      {/* Main Content */}
-      <div className="relative z-10 mx-auto w-full max-w-[1320px] px-4 py-10">
-        <div className="flex flex-col items-center gap-8 lg:flex-row lg:gap-0">
-          {/* ── Left column: illustration ── */}
-          <div className="flex w-full items-center justify-center lg:w-2/3">
-            <div className="relative w-full max-w-[620px] aspect-[620/520]">
+      {/* Main Content Container */}
+      <div className="relative z-10 w-full max-w-[1320px] px-4 md:px-8">
+        <div className="flex flex-col items-center justify-center gap-10 lg:flex-row lg:gap-16 xl:gap-20">
+          {/* Left Illustration - Hidden on mobile or scaled down */}
+          <div className=" w-full items-center justify-center lg:flex lg:w-1/2 xl:w-2/3">
+            <div className="relative w-full max-w-[700px] aspect-[620/520]">
               <Image
                 src="/images/login.png"
                 alt="Login Illustration"
@@ -211,36 +88,33 @@ export default function LoginPage() {
             </div>
           </div>
 
-          {/* ── Right column: login form ── */}
-          <div className="flex bg-[#FFFFFF] w-full mr-10 justify-center lg:w-1/3">
-            <div className="w-full max-w-[420px]  rounded-2xl px-4 py-10">
-              <div className="flex flex-col items-center">
-                {/* Logo */}
-                <div className="mb-7">
-                  <Image
-                    src="/images/logo.svg"
-                    alt="Logo"
-                    width={140}
-                    height={40}
-                    className="h-auto w-[140px]"
-                  />
+          {/* Right Form Card */}
+          <div className="flex w-full justify-center lg:w-1/2 xl:w-1/3">
+            <div className="w-full max-w-[450px] rounded-2xl bg-white p-6 shadow-sm sm:p-10 lg:mr-0">
+              <div className="flex flex-col items-center gap-4 text-center">
+                <Image
+                  src="/images/logo.svg"
+                  alt="Logo"
+                  width={140}
+                  height={80}
+                  className="h-auto w-[140px] md:w-[160px]"
+                />
+                <div className="mt-2">
+                  <p className="text-sm font-medium text-muted-foreground">
+                    Welcome back
+                  </p>
+                  <h4 className="text-xl md:text-2xl font-semibold text-foreground">
+                    Login to your account
+                  </h4>
                 </div>
-
-                {/* Heading */}
-                <p className="mb-2 text-sm font-medium text-muted-foreground">
-                  Welcome back
-                </p>
-                <h4 className="mb-12 text-2xl font-semibold text-foreground">
-                  Login to your account
-                </h4>
               </div>
 
-              {/* Google Sign-In */}
+              {/* Google Login */}
               <Button
                 type="button"
                 variant="outline"
                 onClick={handleGoogleLogin}
-                className="mb-10 flex w-full items-center justify-center gap-3 rounded-xl border border-input bg-white py-5 text-sm font-medium text-foreground shadow-sm hover:bg-accent hover:text-accent-foreground"
+                className="mt-8 mb-8 flex w-full items-center justify-center gap-3 rounded-xl border border-input bg-white py-6 text-sm font-medium text-foreground shadow-sm hover:bg-accent"
               >
                 <Image
                   src="/images/google.svg"
@@ -249,99 +123,125 @@ export default function LoginPage() {
                   height={20}
                   className="h-5 w-5"
                 />
-                <span>Or sign-in with google</span>
+                <span>Sign-in with Google</span>
               </Button>
 
               {/* Divider */}
-              <div className="relative mb-10 flex items-center">
+              <div className="relative mb-6 flex items-center">
                 <Separator className="flex-1" />
-                <span className="mx-4 text-sm text-muted-foreground">Or</span>
+                <span className="mx-4 text-xs uppercase tracking-wider text-muted-foreground">
+                  Or
+                </span>
                 <Separator className="flex-1" />
               </div>
 
               {/* Form */}
-              <div className="space-y-4">
+              <form className="space-y-5" onSubmit={handleSubmit(onSubmit)}>
                 {/* Email */}
                 <div className="space-y-2">
-                  <Label
-                    htmlFor="email"
-                    className="text-sm font-medium text-foreground"
-                  >
+                  <Label htmlFor="email" className="text-sm font-medium">
                     Email
                   </Label>
-                  <Input
-                    id="email"
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className="h-11 w-full rounded-xl border border-input bg-background px-4 text-sm text-foreground placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring"
-                    placeholder="you@example.com"
+                  <Controller
+                    name="email"
+                    control={control}
+                    render={({ field }) => (
+                      <Input
+                        {...field}
+                        id="email"
+                        placeholder="you@example.com"
+                        className="h-12 w-full rounded-xl border-input px-4 focus-visible:ring-[#1890FF]"
+                      />
+                    )}
                   />
+                  {errors.email && (
+                    <p className="text-red-500 text-xs mt-1">
+                      {errors.email.message}
+                    </p>
+                  )}
                 </div>
 
                 {/* Password */}
-                <div className="mb-2 space-y-2">
-                  <Label
-                    htmlFor="password"
-                    className="text-sm font-medium text-foreground"
-                  >
+                <div className="space-y-2">
+                  <Label htmlFor="password" className="text-sm font-medium">
                     Password
                   </Label>
-                  <Input
-                    id="password"
-                    type="password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    className="h-11 w-full rounded-xl border border-input bg-background px-4 text-sm text-foreground placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring"
-                    placeholder="••••••••"
+                  <Controller
+                    name="password"
+                    control={control}
+                    render={({ field }) => (
+                      <div className="relative">
+                        <Input
+                          {...field}
+                          id="password"
+                          type={showPassword ? "text" : "password"}
+                          placeholder="••••••••"
+                          className="h-12 w-full rounded-xl border-input px-4 pr-12 focus-visible:ring-[#1890FF]"
+                        />
+                        <button
+                          type="button"
+                          className="absolute right-4 top-1/2 -translate-y-1/2 text-xs font-semibold text-gray-500 hover:text-[#1890FF]"
+                          onClick={() => setShowPassword(!showPassword)}
+                        >
+                          {showPassword ? "HIDE" : "SHOW"}
+                        </button>
+                      </div>
+                    )}
                   />
+                  {errors.password && (
+                    <p className="text-red-500 text-xs mt-1">
+                      {errors.password.message}
+                    </p>
+                  )}
                 </div>
 
-                {/* Remember me + Forgot password */}
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <Checkbox
-                      id="remember"
-                      checked={rememberMe}
-
-                      onCheckedChange={(checked) =>
-                        setRememberMe(checked as boolean)
-                      }
-                      className="rounded border-input text-white  data-[state=checked]:bg-[#1890FF] data-[state=checked]:border-[#1890FF] "
-                    />
-                    <Label
-                      htmlFor="remember"
-                      className="cursor-pointer text-sm font-normal text-foreground"
-                    >
-                      Remember me
-                    </Label>
-                  </div>
+                {/* Remember Me + Forgot */}
+                <div className="flex items-center justify-between gap-2">
+                  <Controller
+                    name="rememberMe"
+                    control={control}
+                    render={({ field }) => (
+                      <div className="flex items-center gap-2">
+                        <Checkbox
+                          id="remember"
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                          className="h-4 w-4 rounded border-input data-[state=checked]:bg-[#1890FF] data-[state=checked]:border-[#1890FF]"
+                        />
+                        <Label
+                          htmlFor="remember"
+                          className="cursor-pointer text-sm font-normal text-muted-foreground select-none"
+                        >
+                          Remember me
+                        </Label>
+                      </div>
+                    )}
+                  />
                   <button
                     type="button"
-                    className="text-sm text-[#1890FF] font-medium text-primary hover:underline focus:outline-none"
+                    className="text-sm text-[#1890FF] font-medium hover:underline"
                   >
                     Forgot password?
                   </button>
                 </div>
 
                 {/* Login Button */}
-                <div className="pt-6 pb-8">
+                <div className="pt-4">
                   <Button
-                    type="button"
-                    onClick={handleLogin}
-                    className="w-full rounded-xl bg-[#1890FF] py-6 text-sm font-semibold text-white hover:bg-primary/90 focus-visible:ring-2 focus-visible:ring-primary/50"
+                    type="submit"
+                    className="w-full rounded-xl bg-[#1890FF] py-6 text-base font-bold text-white hover:bg-[#40a9ff] transition-colors"
                   >
                     Login now
                   </Button>
                 </div>
-              </div>
+              </form>
 
-              {/* Sign-up link */}
-              <p className="text-center text-sm text-muted-foreground">
+              {/* Sign-up */}
+              <p className="mt-8 text-center text-sm text-muted-foreground">
                 Don&apos;t have an account?{" "}
                 <Link
-                  href="#"
-                  className="font-semibold text-primary hover:underline"
+                  href="/registration"
+                  className="font-semibold text-[#1890FF] hover:underline"
                 >
                   Create New Account
                 </Link>

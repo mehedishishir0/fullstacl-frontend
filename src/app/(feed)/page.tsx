@@ -1,10 +1,9 @@
 import React from 'react'
-import LoginPage from './_components/LoginPage'
 
 const page = () => {
   return (
-    <div className=''>
-        <LoginPage/>
+    <div>
+        
     </div>
   )
 }

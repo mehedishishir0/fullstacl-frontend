@@ -4,6 +4,17 @@
 @tailwind components;
 @tailwind utilities;
 
+
+/* Make Tailwind classes for your CSS variables */
+@layer utilities {
+  .bg-background {
+    background-color: var(--background);
+  }
+  .text-foreground {
+    color: var(--foreground);
+  }
+}
+
 @layer utilities {
   .text-balance {
     text-wrap: balance;
