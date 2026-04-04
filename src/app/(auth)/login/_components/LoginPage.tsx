@@ -11,6 +11,10 @@ import { Separator } from "@/components/ui/separator";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import z from "zod";
+import { signIn } from "next-auth/react";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
+import { Loader2 } from "lucide-react";
 
 const formSchema = z.object({
   email: z.string().email({ message: "Invalid email address" }),
@@ -24,6 +28,8 @@ type FormType = z.infer<typeof formSchema>;
 
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
 
   const {
     handleSubmit,
@@ -38,8 +44,28 @@ export default function LoginPage() {
     },
   });
 
-  const onSubmit = (data: FormType) => {
-    console.log("Login Data:", data);
+  const onSubmit = async (data: FormType) => {
+    setIsLoading(true);
+    try {
+      const res = await signIn("credentials", {
+        email: data.email,
+        password: data.password,
+        redirect: false,
+      });
+
+      if (res?.error) {
+        throw new Error(res.error);
+      }
+      toast.success("Login successful!");
+      router.push("/");
+      setIsLoading(false);
+    } catch (error) {
+      setIsLoading(false);
+      console.log("Login error:", error);
+      toast.error("Incorrect Password");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleGoogleLogin = () => {
@@ -231,7 +257,7 @@ export default function LoginPage() {
                     type="submit"
                     className="w-full rounded-xl bg-[#1890FF] py-6 text-base font-bold text-white hover:bg-[#40a9ff] transition-colors"
                   >
-                    Login now
+                    Login now {isLoading && <Loader2 className="ml-2 h-4 w-4 animate-spin" />}
                   </Button>
                 </div>
               </form>

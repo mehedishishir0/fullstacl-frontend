@@ -5,6 +5,20 @@
 @tailwind utilities;
 
 
+
+
+@layer utilities {
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+}
+
+
 /* Make Tailwind classes for your CSS variables */
 @layer utilities {
   .bg-background {
