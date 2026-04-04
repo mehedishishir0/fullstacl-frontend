@@ -97,8 +97,6 @@
 //   );
 // }
 
-
-
 "use client";
 
 import {
@@ -115,25 +113,19 @@ import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Image from "next/image";
 import { useTheme } from "next-themes";
+import { useSession } from "next-auth/react";
 
 export default function Navbar() {
   const { theme, setTheme } = useTheme();
+  const { data: session } = useSession();
+  const user = session?.user as { firstName: string; lastName: string };
 
   return (
     <>
-      {/* TOP NAVBAR */}
       <header className="h-[70px] bg-white dark:bg-[#112032] flex items-center px-4 md:px-6 sticky top-0 z-50">
         <div className="container w-full mx-auto flex items-center justify-between">
-          
-          {/* LOGO */}
-          <Image
-            src="/images/logo.svg"
-            alt="Logo"
-            width={140}
-            height={24}
-          />
+          <Image src="/images/logo.svg" alt="Logo" width={140} height={24} />
 
-          {/* DESKTOP SEARCH */}
           <div className="hidden md:flex flex-1 max-w-xl px-10">
             <div className="relative w-full">
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-blue-500" />
@@ -146,16 +138,16 @@ export default function Navbar() {
 
           {/* MOBILE SEARCH ICON */}
           <div className="md:hidden p-2 flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors">
-              <button
-                onClick={() => setTheme(theme === "light" ? "dark" : "light")}
-                className="p-2 rounded-full bg-gray-200 dark:bg-gray-700"
-              >
-                {theme === "light" ? (
-                  <Moon className="w-5 h-5" />
-                ) : (
-                  <Sun className="w-5 h-5" />
-                )}
-              </button>
+            <button
+              onClick={() => setTheme(theme === "light" ? "dark" : "light")}
+              className="p-2 rounded-full bg-gray-200 dark:bg-gray-700"
+            >
+              {theme === "light" ? (
+                <Moon className="w-5 h-5" />
+              ) : (
+                <Sun className="w-5 h-5" />
+              )}
+            </button>
 
             <Search className="w-6 h-6" />
           </div>
@@ -194,13 +186,15 @@ export default function Navbar() {
             {/* PROFILE */}
             <div className="flex items-center gap-3 pl-4 cursor-pointer">
               <Avatar className="h-9 w-9">
-                <AvatarImage src="https://github.com/shadcn.png" />
-                <AvatarFallback>DF</AvatarFallback>
+                <AvatarFallback>
+                  {user?.firstName.charAt(0)}
+                  {user?.lastName.charAt(0)}
+                </AvatarFallback>
               </Avatar>
 
               <div className="flex items-center gap-1">
                 <span className="text-sm font-semibold whitespace-nowrap">
-                  Dylan Field
+                  {user?.firstName} {user?.lastName.charAt(0)}
                 </span>
                 <ChevronDown className="w-4 h-4 text-muted-foreground" />
               </div>
@@ -211,7 +205,6 @@ export default function Navbar() {
 
       {/* MOBILE BOTTOM NAVBAR */}
       <div className="md:hidden fixed bottom-0 left-0 right-0 h-[65px] bg-white border-none dark:bg-[#112032] border-t flex items-center justify-around z-50">
-
         <Home className="w-6 h-6 text-blue-500" />
 
         <Users className="w-6 h-6 text-muted-foreground" />
@@ -224,7 +217,6 @@ export default function Navbar() {
           <AvatarImage src="/images/chat2_img.png" />
           <AvatarFallback>DF</AvatarFallback>
         </Avatar>
-
       </div>
     </>
   );

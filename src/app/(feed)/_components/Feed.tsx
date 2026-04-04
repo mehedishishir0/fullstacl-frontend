@@ -1,22 +1,16 @@
-import React from 'react'
-import StoryBar from './StoryBar'
-import CreatePost from './CreatePost'
-import Post from './Post'
+import React from "react";
+import StoryBar from "./StoryBar";
+import CreatePost from "./CreatePost";
+import Allpost from "./Allpost";
 
 const Feed = () => {
   return (
     <div>
-        <StoryBar/>
-        <CreatePost/>
-        <div className='flex flex-col gap-5 lg:mb-20 mb-32'>
-          <Post/>
-          <Post/>
-            <Post/>
-              <Post/>
-                <Post/>
-        </div>
+      <StoryBar />
+      <CreatePost />
+      <Allpost/>
     </div>
-  )
-}
+  );
+};
 
-export default Feed
+export default Feed;
