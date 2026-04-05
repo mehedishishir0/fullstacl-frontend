@@ -7,12 +7,10 @@ import {
   Calendar,
   FileText,
   Send,
-  Pencil,
   Loader2,
 } from "lucide-react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { useSession } from "next-auth/react";
 
@@ -25,6 +23,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import Image from "next/image";
+import { useCreatePost } from "@/hooks/Apicalling";
 
 export default function CreatePost() {
   const { data: session } = useSession();
@@ -34,45 +33,25 @@ export default function CreatePost() {
   const [text, setText] = useState("");
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [open, setOpen] = useState(false);
+  const [isPublic, setIsPublic] = useState(true);
 
-  const postMutation = useMutation({
-    mutationFn: async (data: { text: string; image?: File }) => {
-      const formData = new FormData();
-      formData.append("text", data.text);
-      if (data.image) formData.append("image", data.image);
-
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/feed/post`,
-        {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-          body: formData,
-        },
-      );
-
-      const result = await res.json();
-      if (!res.ok) throw new Error(result.message || "Failed to save");
-      return result;
-    },
-    onSuccess: (data) => {
-      toast.success(data.message || "Post created successfully!");
-      setText("");
-      setSelectedImage(null);
-      setOpen(false);
-    },
-    onError: (error) => {
-      toast.error((error as Error).message || "Failed to create post.");
-    },
-  });
+  const postMutation = useCreatePost(token);
 
   const handlePost = () => {
     if (!text && !selectedImage) {
       toast.error("Please enter text or select an image to post.");
       return;
     }
-    postMutation.mutate({ text, image: selectedImage || undefined });
+    postMutation.mutate(
+      { text, image: selectedImage || undefined, isPublic },
+      {
+        onSuccess: () => {
+          setOpen(false);
+          setSelectedImage(null);
+          setOpen(false);
+        },
+      },
+    );
   };
 
   const handleCancel = () => {
@@ -85,8 +64,8 @@ export default function CreatePost() {
       <div className="flex items-center gap-3 md:gap-4 mb-5 md:mb-8">
         <Avatar className="w-10 h-10 md:w-11 md:h-11">
           <AvatarFallback>
-            {user?.firstName.charAt(0)}
-            {user?.lastName.charAt(0)}
+            {user?.firstName?.charAt(0)}
+            {user?.lastName?.charAt(0)}
           </AvatarFallback>
         </Avatar>
         <div className="flex-1 flex items-center justify-between group cursor-text">
@@ -97,7 +76,16 @@ export default function CreatePost() {
             value={text}
             onChange={(e) => setText(e.target.value)}
           />
-          <Pencil className="w-4 h-4 dark:text-gray-500 text-gray-400" />
+          <button
+            onClick={() => setIsPublic(!isPublic)}
+            className={`text-xs px-3 py-1 rounded-full border transition ${
+              isPublic
+                ? "bg-blue-500 text-white border-blue-500"
+                : "bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-300"
+            }`}
+          >
+            {isPublic ? "Public" : "Private"}
+          </button>
         </div>
       </div>
 
@@ -154,6 +142,17 @@ export default function CreatePost() {
               </div>
 
               <DialogFooter className="mt-4 flex justify-end gap-2">
+                <button
+                  onClick={() => setIsPublic(!isPublic)}
+                  className={`text-xs px-3 py-1 rounded-full border transition ${
+                    isPublic
+                      ? "bg-blue-500 text-white border-blue-500"
+                      : "bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-300"
+                  }`}
+                >
+                  {isPublic ? "Public" : "Private"}
+                </button>
+
                 <Button
                   variant="outline"
                   onClick={handleCancel}

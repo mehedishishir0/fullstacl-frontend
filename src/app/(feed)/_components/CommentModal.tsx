@@ -61,8 +61,8 @@ export default function CommentModal({ post }: CommentModalProps) {
         <div className="flex items-center gap-3 dark:bg-[#232E42] bg-[#F6F6F6] rounded-full px-4 py-2 my-4">
           <Avatar className="w-8 h-8">
             <AvatarFallback>
-              {post.user.firstName.charAt(0)}
-              {post.user.lastName.charAt(0)}
+              {post?.user?.firstName?.charAt(0)}
+              {post?.user?.lastName?.charAt(0)}
             </AvatarFallback>
           </Avatar>
           <input

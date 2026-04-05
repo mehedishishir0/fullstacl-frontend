@@ -28,7 +28,7 @@ type Image = {
   public_id: string;
 };
 
-type Comment = {
+export type Comment = {
   _id: string;
   post: string;
   user: User;

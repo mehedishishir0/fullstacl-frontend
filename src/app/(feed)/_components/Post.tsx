@@ -1,13 +1,12 @@
-// components/Feed/Post.tsx
-import { MoreHorizontal, Share2, Heart } from "lucide-react";
+import { MoreHorizontal } from "lucide-react";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import Image from "next/image";
 import type { Post } from "@/types/allPostDataType";
 import Comment from "./Comment";
-import CommentModal from "./CommentModal";
+import AllReactAction from "./AllReactAction";
 
 export default function Post({ post }: { post: Post }) {
-
+ 
   return (
     <div className="dark:bg-[#112032] bg-white rounded-[15px] shadow-sm overflow-hidden ">
       {/* Header */}
@@ -15,17 +14,17 @@ export default function Post({ post }: { post: Post }) {
         <div className="flex items-center gap-4">
           <Avatar className="w-12 h-12">
             <AvatarFallback>
-              {post.user.firstName.charAt(0)}
-              {post.user.lastName.charAt(0)}
+              {post?.user?.firstName.charAt(0)}
+              {post?.user?.lastName.charAt(0)}
             </AvatarFallback>
           </Avatar>
           <div className="flex flex-col">
             <span className="font-bold text-[17px] leading-tight cursor-pointer">
-              {post.user.firstName} {post.user.lastName}
+              {post?.user?.firstName} {post?.user?.lastName}
             </span>
             <div className="flex gap-2 items-center mt-1 ">
               <span className="text-gray-400 text-[13px]">
-                {new Date(post.createdAt).toLocaleString("en-US", {
+                {new Date(post?.createdAt).toLocaleString("en-US", {
                   month: "short",
                   day: "numeric",
                   year: "numeric",
@@ -44,7 +43,6 @@ export default function Post({ post }: { post: Post }) {
         </button>
       </div>
 
-      {/* Caption */}
       <div className="px-6 pb-4">
         <p className="text-[16px] ">{post.text}</p>
       </div>
@@ -88,17 +86,7 @@ export default function Post({ post }: { post: Post }) {
         </div>
       </div>
 
-      <div className="px-6 py-2 flex gap-2 items-center dark:bg-[#11263c] bg-[#FBFCFD] ">
-        <button className="flex-1 flex items-center justify-center gap-2 py-3 bg-[#1e3a5f]/30 rounded-lg text-blue-400 font-medium">
-          <Heart className="w-5 h-5" /> Love
-        </button>
-      
-        <CommentModal post={post} />
-        
-        <button className="flex-1 flex items-center justify-center gap-2 py-3 hover:bg-white/5 rounded-lg transition-colors">
-          <Share2 className="w-5 h-5" /> Share
-        </button>
-      </div>
+      <AllReactAction post={post} />
 
       <Comment post={post} />
     </div>

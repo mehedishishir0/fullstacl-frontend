@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -34,6 +34,7 @@ export default function LoginPage() {
   const {
     handleSubmit,
     control,
+    setValue,
     formState: { errors },
   } = useForm<FormType>({
     resolver: zodResolver(formSchema),
@@ -44,9 +45,31 @@ export default function LoginPage() {
     },
   });
 
+  useEffect(() => {
+    const savedUser = localStorage.getItem("rememberedUser");
+    if (savedUser) {
+      const parsed = JSON.parse(savedUser);
+      setValue("email", parsed.email);
+      setValue("password", parsed.password);
+      setValue("rememberMe", true);
+    }
+  }, [setValue]);
+
   const onSubmit = async (data: FormType) => {
     setIsLoading(true);
     try {
+      if (data.rememberMe) {
+        localStorage.setItem(
+          "rememberedUser",
+          JSON.stringify({
+            email: data.email,
+            password: data.password,
+          }),
+        );
+      } else {
+        localStorage.removeItem("rememberedUser");
+      }
+
       const res = await signIn("credentials", {
         email: data.email,
         password: data.password,
@@ -68,14 +91,20 @@ export default function LoginPage() {
     }
   };
 
-  const handleGoogleLogin = () => {
-    console.log("Google login");
+  const handleGoogleLogin = async () => {
+    setIsLoading(true);
+    try {
+      await signIn("google", { callbackUrl: "/" });
+    } catch (error) {
+      console.error("Google login error:", error);
+      toast.error("Google login failed");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
     <section className="relative min-h-screen w-full overflow-x-hidden bg-[#F0F2F5] flex items-center justify-center py-10 lg:py-20">
-      {/* Background Shapes - Hidden on small mobile to prevent layout issues, optimized positioning */}
-
       <div className="pointer-events-none absolute left-0 -top-10 z-0 opacity-50 lg:opacity-100">
         <Image src="/images/shape1.svg" alt="" width={200} height={200} />
       </div>
@@ -101,7 +130,6 @@ export default function LoginPage() {
       {/* Main Content Container */}
       <div className="relative z-10 w-full max-w-[1320px] px-4 md:px-8">
         <div className="flex flex-col items-center justify-center gap-10 lg:flex-row lg:gap-16 xl:gap-20">
-          {/* Left Illustration - Hidden on mobile or scaled down */}
           <div className=" w-full items-center justify-center lg:flex lg:w-1/2 xl:w-2/3">
             <div className="relative w-full max-w-[700px] aspect-[620/520]">
               <Image
@@ -114,7 +142,6 @@ export default function LoginPage() {
             </div>
           </div>
 
-          {/* Right Form Card */}
           <div className="flex w-full justify-center lg:w-1/2 xl:w-1/3">
             <div className="w-full max-w-[450px] rounded-2xl bg-white p-6 shadow-sm sm:p-10 lg:mr-0">
               <div className="flex flex-col items-center gap-4 text-center">
@@ -135,7 +162,6 @@ export default function LoginPage() {
                 </div>
               </div>
 
-              {/* Google Login */}
               <Button
                 type="button"
                 variant="outline"
@@ -149,10 +175,9 @@ export default function LoginPage() {
                   height={20}
                   className="h-5 w-5"
                 />
-                <span>Sign-in with Google</span>
+                <span>Login with Google</span>
               </Button>
 
-              {/* Divider */}
               <div className="relative mb-6 flex items-center">
                 <Separator className="flex-1" />
                 <span className="mx-4 text-xs uppercase tracking-wider text-muted-foreground">
@@ -161,9 +186,7 @@ export default function LoginPage() {
                 <Separator className="flex-1" />
               </div>
 
-              {/* Form */}
               <form className="space-y-5" onSubmit={handleSubmit(onSubmit)}>
-                {/* Email */}
                 <div className="space-y-2">
                   <Label htmlFor="email" className="text-sm font-medium">
                     Email
@@ -187,7 +210,6 @@ export default function LoginPage() {
                   )}
                 </div>
 
-                {/* Password */}
                 <div className="space-y-2">
                   <Label htmlFor="password" className="text-sm font-medium">
                     Password
@@ -221,7 +243,6 @@ export default function LoginPage() {
                   )}
                 </div>
 
-                {/* Remember Me + Forgot */}
                 <div className="flex items-center justify-between gap-2">
                   <Controller
                     name="rememberMe"
@@ -251,18 +272,19 @@ export default function LoginPage() {
                   </button>
                 </div>
 
-                {/* Login Button */}
                 <div className="pt-4">
                   <Button
                     type="submit"
                     className="w-full rounded-xl bg-[#1890FF] py-6 text-base font-bold text-white hover:bg-[#40a9ff] transition-colors"
                   >
-                    Login now {isLoading && <Loader2 className="ml-2 h-4 w-4 animate-spin" />}
+                    Login now{" "}
+                    {isLoading && (
+                      <Loader2 className="ml-2 h-4 w-4 animate-spin" />
+                    )}
                   </Button>
                 </div>
               </form>
 
-              {/* Sign-up */}
               <p className="mt-8 text-center text-sm text-muted-foreground">
                 Don&apos;t have an account?{" "}
                 <Link

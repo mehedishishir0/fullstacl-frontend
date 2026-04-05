@@ -1,7 +1,16 @@
-import { NextAuthOptions } from "next-auth";
+import { DefaultUser, NextAuthOptions } from "next-auth";
 
 import { JWT } from "next-auth/jwt";
 import CredentialsProvider from "next-auth/providers/credentials";
+import GoogleProvider from "next-auth/providers/google";
+
+interface MyUser extends DefaultUser {
+  id: string;
+  firstName: string;
+  lastName: string;
+  accessToken: string;
+  refreshToken: string;
+}
 
 async function refreshAccessToken(token: JWT) {
   try {
@@ -22,7 +31,7 @@ async function refreshAccessToken(token: JWT) {
     console.log("token");
     console.log(token);
     console.log(data);
-    
+
     if (!res.ok) throw data;
 
     return {
@@ -90,13 +99,56 @@ export const authOptions: NextAuthOptions = {
         };
       },
     }),
+
+    GoogleProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID!,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+    }),
   ],
 
   callbacks: {
-    // 🔥 MAIN LOGIC
+    async signIn({ user, account, profile }) {
+      if (account?.provider === "google") {
+        try {
+          const fullName = profile?.name || "";
+          const nameParts = fullName.split(" ");
+          const firstName = nameParts[0];
+          const lastName = nameParts.slice(1).join(" ") || firstName;
+
+          const res = await fetch(
+            `${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/google`,
+            {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                email: profile?.email,
+                firstName,
+                lastName,
+              }),
+            },
+          );
+
+          const data = await res.json();
+
+          if (!data?.success || !data?.data?.user) return false;
+          const u = user as MyUser;
+          u.id = data.data.user._id;
+          u.firstName = data.data.user.firstName;
+          u.lastName = data.data.user.lastName;
+          u.email = data.data.user.email;
+          u.accessToken = data.data.accessToken;
+          u.refreshToken = data.data.refreshToken;
+
+        } catch (err) {
+          console.error("Google signIn error:", err);
+          return false;
+        }
+      }
+      return true;
+    },
+
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     async jwt({ token, user }: { token: JWT; user?: any }) {
-      // 🟢 First login
       if (user) {
         return {
           ...token,
@@ -106,17 +158,16 @@ export const authOptions: NextAuthOptions = {
           email: user.email,
           accessToken: user.accessToken,
           refreshToken: user.refreshToken,
-          accessTokenExpires: Date.now() + 14 * 60 * 1000, 
+          accessTokenExpires: Date.now() + 14 * 60 * 1000,
         };
       }
 
-      // 🟢 Token still valid
       if (Date.now() < (token.accessTokenExpires as number)) {
         return token;
       }
- 
-      console.log("token ax")
-  
+
+      console.log("token ax");
+
       return await refreshAccessToken(token);
     },
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -129,11 +180,25 @@ export const authOptions: NextAuthOptions = {
         accessToken: token.accessToken,
         refreshToken: token.refreshToken,
       };
-
-      // 🔥 optional: error pass করো
       session.error = token.error;
-
       return session;
     },
   },
 };
+
+
+export async function logout(token:string) {
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/logout`,
+    {
+      method: "POST",
+       headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  );
+
+  const resData = await response.json();
+  if (!response.ok) throw new Error(resData.message || "Logout faild");
+  return resData;
+}

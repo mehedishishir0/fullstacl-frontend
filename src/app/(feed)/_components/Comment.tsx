@@ -2,16 +2,12 @@
 
 import { useState } from "react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import {
-  ThumbsUp,
-  Heart,
-  Mic,
-  Image as ImageIcon,
-  Loader2,
-} from "lucide-react";
+import { Mic, Image as ImageIcon, Loader2 } from "lucide-react";
 import type { Post } from "@/types/allPostDataType";
 import { usePostReplyComment } from "@/hooks/Apicalling";
 import { useSession } from "next-auth/react";
+import CommentReaactAction from "./CommentReaactAction";
+import RepliesComment from "./RepliesComment";
 
 type Props = {
   post: Post;
@@ -63,19 +59,11 @@ export default function PostComments({ post }: Props) {
               <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed">
                 {comment.text}
               </p>
-              <div className="absolute -bottom-3 right-2 flex items-center gap-1 dark:bg-[#1e3a5f] bg-[#fff] border border-white/10 px-2 py-0.5 rounded-full shadow-lg">
-                <div className="flex -space-x-1">
-                  <ThumbsUp className="w-3 h-3 text-blue-400 fill-blue-400" />
-                  <Heart className="w-3 h-3 text-red-500 fill-red-500" />
-                </div>
-                <span className="text-[10px] font-bold">
-                  {comment.likes.length}
-                </span>
-              </div>
+              <CommentReaactAction comment={comment} />
             </div>
 
             <div className="flex gap-4 mt-2 ml-1 text-xs font-bold text-blue-400">
-              <button className="hover:underline">Like.</button>
+              {/* <button className="hover:underline">Like.</button> */}
               <button
                 onClick={() => handleReplyClick(comment._id)}
                 className="hover:underline"
@@ -121,30 +109,8 @@ export default function PostComments({ post }: Props) {
             )}
 
             {/* Replies */}
-            {comment.replies.length > 0 && (
-              <div className="flex flex-col gap-4 mt-4 ml-8">
-                {comment.replies.map((reply) => (
-                  <div key={reply._id} className="flex gap-3 group">
-                    <Avatar className="w-6 h-6">
-                      <AvatarFallback>
-                        {reply.user.firstName.charAt(0)}
-                        {reply.user.lastName.charAt(0)}
-                      </AvatarFallback>
-                    </Avatar>
-                    <div className="flex-1">
-                      <div className="relative dark:bg-[#232E42] bg-[#F6F6F6] p-3 rounded-2xl rounded-tl-none">
-                        <h4 className="font-bold text-xs mb-1">
-                          {reply.user.firstName} {reply.user.lastName}
-                        </h4>
-                        <p className="text-xs text-gray-600 dark:text-gray-300 leading-relaxed">
-                          {reply.text}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
+           <RepliesComment comment={comment} />
+           
           </div>
         </div>
       ))}
