@@ -9,7 +9,6 @@ export async function middleware(req: NextRequest) {
 
   const { pathname } = req.nextUrl;
 
-
   const isAuthPage =
     pathname.startsWith("/login") ||
     pathname.startsWith("/registration");

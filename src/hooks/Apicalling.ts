@@ -1,5 +1,5 @@
 import { logout, registration } from "@/lib/auth";
-import { commentLike, commentReply, createPost, getAllPosts, postComment, postLike, repliesLike } from "@/lib/Feed";
+import { commentLike, commentReply, createPost, deletePost, getAllPosts, postComment, postLike, repliesLike } from "@/lib/Feed";
 import { FeedResponse } from "@/types/allPostDataType";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
@@ -34,6 +34,29 @@ export function useCreatePost(token: string, onSuccessCallback?: () => void) {
       if (error instanceof Error)
         toast.error(error.message || "Post created failed");
       else toast.error("Post created failed");
+    },
+  });
+}
+
+export function useDeletePost(token: string, onSuccessCallback?: () => void) {
+  const queryClient = useQueryClient();
+  
+  return useMutation({
+
+    mutationFn: (data: { postId:string}) => deletePost(token, data.postId),
+   
+    onSuccess: (data) => {
+      toast.success(data?.message || "Post deleted successfully!");
+
+      queryClient.invalidateQueries({ queryKey: ["feed"] });
+      
+      if (onSuccessCallback) onSuccessCallback();
+    
+    },
+    onError: (error: unknown) => {
+      if (error instanceof Error)
+        toast.error(error.message || "Post deleted failed");
+      else toast.error("Post deleted failed");
     },
   });
 }
