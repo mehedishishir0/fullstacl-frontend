@@ -1,4 +1,4 @@
-import { logout } from "@/lib/auth";
+import { logout, registration } from "@/lib/auth";
 import { commentLike, commentReply, createPost, getAllPosts, postComment, postLike, repliesLike } from "@/lib/Feed";
 import { FeedResponse } from "@/types/allPostDataType";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -154,6 +154,21 @@ export function useRepliesLike(token: string, onSuccessCallback?: () => void) {
       if (error instanceof Error)
         toast.error(error.message || "Like failed");
       else toast.error("Like failed");
+    },
+  });
+}
+
+export function useRegistration( onSuccessCallback?: () => void) {  
+  return useMutation({ mutationFn: (data: { firstName: string; lastName: string; email: string; password: string }) => registration(data.firstName, data.lastName, data.email,data.password),
+   
+    onSuccess: (data) => {
+      toast.success(data?.message || "Logout  successfully");
+      if (onSuccessCallback) onSuccessCallback();
+    },
+    onError: (error: unknown) => {
+      if (error instanceof Error)
+        toast.error(error.message || "logout failed");
+      else toast.error("logout failed");
     },
   });
 }

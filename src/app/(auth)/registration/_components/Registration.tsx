@@ -11,19 +11,26 @@ import { Separator } from "@/components/ui/separator";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import z from "zod";
-import { useMutation } from "@tanstack/react-query";
-import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { Loader2 } from "lucide-react";
+import GoogleLogin from "../../_components/GoogleLogin";
+import { useRegistration } from "@/hooks/Apicalling";
 
-// Zod schema with repeat password validation
 const formSchema = z
   .object({
-    firstName: z.string().min(2, { message: "First name should be at least 2 characters." }),
-    lastName: z.string().min(2, { message: "Last name should be at least 2 characters." }),
+    firstName: z
+      .string()
+      .min(2, { message: "First name should be at least 2 characters." }),
+    lastName: z
+      .string()
+      .min(2, { message: "Last name should be at least 2 characters." }),
     email: z.string().email({ message: "Invalid email address" }),
-    password: z.string().min(6, { message: "Password should be at least 6 characters." }),
-    repeatPassword: z.string().min(6, { message: "Repeat password is required" }),
+    password: z
+      .string()
+      .min(6, { message: "Password should be at least 6 characters." }),
+    repeatPassword: z
+      .string()
+      .min(6, { message: "Repeat password is required" }),
     rememberMe: z.boolean().optional(),
   })
   .refine((data) => data.password === data.repeatPassword, {
@@ -37,8 +44,13 @@ export default function Registration() {
   const [showPassword, setShowPassword] = useState(false);
   const [showRepeatPassword, setShowRepeatPassword] = useState(false);
   const router = useRouter();
+  const registrationMutation = useRegistration();
 
-  const { handleSubmit, control, formState: { errors } } = useForm<FormType>({
+  const {
+    handleSubmit,
+    control,
+    formState: { errors },
+  } = useForm<FormType>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       firstName: "",
@@ -50,56 +62,24 @@ export default function Registration() {
     },
   });
 
-
-   const mutation = useMutation({
-    mutationFn: async (data: { firstName: string; lastName: string; email: string; password: string }) => {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/register`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(data),
-        }
-      );
-
-      const result = await res.json();
-
-      if (!res.ok) {
-        throw new Error(result.error || "Registration failed");
-      }
-
-      return result;
-    },
-
-    onSuccess: (data) => {
-      toast.success(data.message || "Registration successful!");
-      router.push("/login");
-    },
-    onError: (error: Error) => {
-      toast.error(error.message || "An error occurred during registration");
-    },
-  });
-
-
   const onSubmit = (data: FormType) => {
-   mutation.mutate({
-      firstName: data.firstName,
-      lastName: data.lastName,
-      email: data.email,
-      password: data.password,
-    });
-  };
-
-  const handleGoogleLogin = () => {
-    console.log("Google registration");
+    registrationMutation.mutate(
+      {
+        firstName: data.firstName,
+        lastName: data.lastName,
+        email: data.email,
+        password: data.password,
+      },
+      {
+        onSuccess: () => {
+          router.push("/login");
+        },
+      },
+    );
   };
 
   return (
     <section className="relative min-h-screen w-full overflow-hidden bg-[#F0F2F5] flex items-center justify-center py-6 md:py-20">
-      
-      {/* Background Shapes - Only visible on large screens */}
       <div className="pointer-events-none absolute left-0 -top-10 z-0 hidden lg:block">
         <Image src="/images/shape1.svg" alt="" width={200} height={200} />
       </div>
@@ -110,57 +90,53 @@ export default function Registration() {
         <Image src="/images/shape3.svg" alt="" width={500} height={600} />
       </div>
 
-      {/* Main Content Container */}
       <div className="relative z-10 w-full max-w-[1320px] px-4">
         <div className="flex flex-col items-center justify-center gap-10 lg:flex-row lg:gap-40">
-          
-          {/* Left Illustration - Hidden on mobile/tablet */}
           <div className=" w-full items-center justify-center lg:flex lg:w-1/2">
             <div className="relative w-full max-w-[680px] aspect-[620/520]">
-              <Image 
-                src="/images/registration.png" 
-                alt="Registration Illustration" 
-                fill 
-                className="object-contain" 
-                priority 
+              <Image
+                src="/images/registration.png"
+                alt="Registration Illustration"
+                fill
+                className="object-contain"
+                priority
               />
             </div>
           </div>
 
-          {/* Right Form - Perfectly centered on mobile/tablet */}
           <div className="flex w-full items-center justify-center lg:w-1/2 xl:w-1/3">
             <div className="w-full max-w-[440px] rounded-2xl bg-white p-6 shadow-sm sm:p-10">
               <div className="flex flex-col items-center gap-5 text-center">
-                <Image src="/images/logo.svg" alt="Logo" width={140} height={40} className="h-auto w-[160px]" />
+                <Image
+                  src="/images/logo.svg"
+                  alt="Logo"
+                  width={140}
+                  height={40}
+                  className="h-auto w-[160px]"
+                />
                 <div>
-                  <p className="text-sm font-medium text-muted-foreground">Get Started Now</p>
-                  <h4 className="text-2xl font-bold text-foreground">Registration</h4>
+                  <p className="text-sm font-medium text-muted-foreground">
+                    Get Started Now
+                  </p>
+                  <h4 className="text-2xl font-bold text-foreground">
+                    Registration
+                  </h4>
                 </div>
               </div>
 
-              {/* Google Registration */}
-              <Button
-                type="button"
-                variant="outline"
-                onClick={handleGoogleLogin}
-                className="mt-8 mb-8 flex w-full items-center justify-center gap-3 rounded-xl border border-input bg-white py-6 text-sm font-medium shadow-sm hover:bg-accent"
-              >
-                <Image src="/images/google.svg" alt="Google" width={20} height={20} className="h-5 w-5" />
-                <span>Register with google</span>
-              </Button>
+              <GoogleLogin title={"Register with google"} />
 
-              {/* Divider */}
               <div className="relative mb-8 flex items-center">
                 <Separator className="flex-1" />
                 <span className="mx-4 text-sm text-muted-foreground">Or</span>
                 <Separator className="flex-1" />
               </div>
 
-              {/* Form */}
               <form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
-          
                 <div className="space-y-2">
-                  <Label htmlFor="firstName" className="text-sm font-medium">First Name</Label>
+                  <Label htmlFor="firstName" className="text-sm font-medium">
+                    First Name
+                  </Label>
                   <Controller
                     name="firstName"
                     control={control}
@@ -174,12 +150,17 @@ export default function Registration() {
                       />
                     )}
                   />
-                  {errors.firstName && <p className="text-red-500 text-xs">{errors.firstName.message}</p>}
+                  {errors.firstName && (
+                    <p className="text-red-500 text-xs">
+                      {errors.firstName.message}
+                    </p>
+                  )}
                 </div>
 
-           
                 <div className="space-y-2">
-                  <Label htmlFor="lastName" className="text-sm font-medium">Last Name</Label>
+                  <Label htmlFor="lastName" className="text-sm font-medium">
+                    Last Name
+                  </Label>
                   <Controller
                     name="lastName"
                     control={control}
@@ -193,12 +174,17 @@ export default function Registration() {
                       />
                     )}
                   />
-                  {errors.lastName && <p className="text-red-500 text-xs">{errors.lastName.message}</p>}
+                  {errors.lastName && (
+                    <p className="text-red-500 text-xs">
+                      {errors.lastName.message}
+                    </p>
+                  )}
                 </div>
 
-
                 <div className="space-y-2">
-                  <Label htmlFor="email" className="text-sm font-medium">Email</Label>
+                  <Label htmlFor="email" className="text-sm font-medium">
+                    Email
+                  </Label>
                   <Controller
                     name="email"
                     control={control}
@@ -212,12 +198,17 @@ export default function Registration() {
                       />
                     )}
                   />
-                  {errors.email && <p className="text-red-500 text-xs">{errors.email.message}</p>}
+                  {errors.email && (
+                    <p className="text-red-500 text-xs">
+                      {errors.email.message}
+                    </p>
+                  )}
                 </div>
 
-     
                 <div className="space-y-2">
-                  <Label htmlFor="password" className="text-sm font-medium">Password</Label>
+                  <Label htmlFor="password" className="text-sm font-medium">
+                    Password
+                  </Label>
                   <Controller
                     name="password"
                     control={control}
@@ -240,12 +231,20 @@ export default function Registration() {
                       </div>
                     )}
                   />
-                  {errors.password && <p className="text-red-500 text-xs">{errors.password.message}</p>}
+                  {errors.password && (
+                    <p className="text-red-500 text-xs">
+                      {errors.password.message}
+                    </p>
+                  )}
                 </div>
 
-
                 <div className="space-y-2">
-                  <Label htmlFor="repeatPassword" className="text-sm font-medium">Repeat Password</Label>
+                  <Label
+                    htmlFor="repeatPassword"
+                    className="text-sm font-medium"
+                  >
+                    Repeat Password
+                  </Label>
                   <Controller
                     name="repeatPassword"
                     control={control}
@@ -261,17 +260,22 @@ export default function Registration() {
                         <button
                           type="button"
                           className="absolute right-4 top-1/2 -translate-y-1/2 text-sm font-medium text-gray-400"
-                          onClick={() => setShowRepeatPassword(!showRepeatPassword)}
+                          onClick={() =>
+                            setShowRepeatPassword(!showRepeatPassword)
+                          }
                         >
                           {showRepeatPassword ? "Hide" : "Show"}
                         </button>
                       </div>
                     )}
                   />
-                  {errors.repeatPassword && <p className="text-red-500 text-xs">{errors.repeatPassword.message}</p>}
+                  {errors.repeatPassword && (
+                    <p className="text-red-500 text-xs">
+                      {errors.repeatPassword.message}
+                    </p>
+                  )}
                 </div>
 
-   
                 <div className="flex items-center justify-between gap-2">
                   <Controller
                     name="rememberMe"
@@ -284,31 +288,42 @@ export default function Registration() {
                           onCheckedChange={field.onChange}
                           className="data-[state=checked]:bg-[#1890FF] data-[state=checked]:border-[#1890FF]"
                         />
-                        <Label htmlFor="remember" className="cursor-pointer text-sm font-normal select-none">
+                        <Label
+                          htmlFor="remember"
+                          className="cursor-pointer text-sm font-normal select-none"
+                        >
                           Remember me
                         </Label>
                       </div>
                     )}
                   />
-                  <button type="button" className="text-sm text-[#1890FF] font-medium hover:underline">
+                  <button
+                    type="button"
+                    className="text-sm text-[#1890FF] font-medium hover:underline"
+                  >
                     Forgot password?
                   </button>
                 </div>
 
-
                 <div className="pt-4">
-                  <Button 
-                    type="submit" 
+                  <Button
+                    type="submit"
                     className="w-full rounded-xl bg-[#1890FF] py-7 text-base font-semibold text-white hover:bg-[#40a9ff] transition-all"
                   >
-                    Register now {mutation.isPending && <Loader2 className="ml-2 h-4 w-4 animate-spin" />}
+                    Register now{" "}
+                    {registrationMutation.isPending && (
+                      <Loader2 className="ml-2 h-4 w-4 animate-spin" />
+                    )}
                   </Button>
                 </div>
               </form>
 
               <p className="mt-8 text-center text-sm text-muted-foreground">
                 Already have an account?{" "}
-                <Link href="/login" className="font-semibold text-[#1890FF] hover:underline">
+                <Link
+                  href="/login"
+                  className="font-semibold text-[#1890FF] hover:underline"
+                >
                   Sign In
                 </Link>
               </p>

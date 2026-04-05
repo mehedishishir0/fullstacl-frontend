@@ -137,7 +137,6 @@ export const authOptions: NextAuthOptions = {
           u.email = data.data.user.email;
           u.accessToken = data.data.accessToken;
           u.refreshToken = data.data.refreshToken;
-
         } catch (err) {
           console.error("Google signIn error:", err);
           return false;
@@ -165,8 +164,6 @@ export const authOptions: NextAuthOptions = {
         return token;
       }
 
-      console.log("token ax");
-
       return await refreshAccessToken(token);
     },
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -185,13 +182,39 @@ export const authOptions: NextAuthOptions = {
   },
 };
 
+export async function registration(
+  firstName: string,
+  lastName: string,
+  email: string,
+  password: string,
+) {
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/register`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        firstName,
+        lastName,
+        email,
+        password,
+      }),
+    },
+  );
 
-export async function logout(token:string) {
+  const resData = await response.json();
+  if (!response.ok) throw new Error(resData.message || "Logout faild");
+  return resData;
+}
+
+export async function logout(token: string) {
   const response = await fetch(
     `${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/logout`,
     {
       method: "POST",
-       headers: {
+      headers: {
         Authorization: `Bearer ${token}`,
       },
     },

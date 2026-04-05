@@ -15,6 +15,7 @@ import { signIn } from "next-auth/react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { Loader2 } from "lucide-react";
+import GoogleLogin from "../../_components/GoogleLogin";
 
 const formSchema = z.object({
   email: z.string().email({ message: "Invalid email address" }),
@@ -91,17 +92,7 @@ export default function LoginPage() {
     }
   };
 
-  const handleGoogleLogin = async () => {
-    setIsLoading(true);
-    try {
-      await signIn("google", { callbackUrl: "/" });
-    } catch (error) {
-      console.error("Google login error:", error);
-      toast.error("Google login failed");
-    } finally {
-      setIsLoading(false);
-    }
-  };
+
 
   return (
     <section className="relative min-h-screen w-full overflow-x-hidden bg-[#F0F2F5] flex items-center justify-center py-10 lg:py-20">
@@ -162,21 +153,7 @@ export default function LoginPage() {
                 </div>
               </div>
 
-              <Button
-                type="button"
-                variant="outline"
-                onClick={handleGoogleLogin}
-                className="mt-8 mb-8 flex w-full items-center justify-center gap-3 rounded-xl border border-input bg-white py-6 text-sm font-medium text-foreground shadow-sm hover:bg-accent"
-              >
-                <Image
-                  src="/images/google.svg"
-                  alt="Google"
-                  width={20}
-                  height={20}
-                  className="h-5 w-5"
-                />
-                <span>Login with Google</span>
-              </Button>
+             <GoogleLogin title={"Login with Google"} />
 
               <div className="relative mb-6 flex items-center">
                 <Separator className="flex-1" />
