@@ -1,13 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import {
   Image as LucideImage,
   Video,
   Calendar,
-  FileText,
   Send,
   Loader2,
+  ImageIcon,
 } from "lucide-react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -34,6 +34,7 @@ export default function CreatePost() {
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [open, setOpen] = useState(false);
   const [isPublic, setIsPublic] = useState(true);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const postMutation = useCreatePost(token);
 
@@ -126,12 +127,21 @@ export default function CreatePost() {
                 <input
                   type="file"
                   accept="image/*"
+                  ref={fileInputRef}
                   onChange={(e) =>
                     e.target.files?.[0] && setSelectedImage(e.target.files[0])
                   }
-                  className="text-sm text-gray-500 dark:text-gray-300"
+                  className="hidden"
                 />
 
+                {/* Icon Button */}
+                <button
+                  onClick={() => fileInputRef.current?.click()}
+                  className="flex items-center gap-2 text-gray-500 hover:text-blue-500"
+                >
+                  <ImageIcon className="w-6 h-6" />
+                  <span className="text-sm">Add Image</span>
+                </button>
                 <textarea
                   placeholder="Write something..."
                   className="w-full p-3 border rounded-lg bg-transparent dark:text-gray-200 resize-none focus:outline-none focus:ring-2 focus:ring-blue-400"
@@ -179,9 +189,9 @@ export default function CreatePost() {
           <button className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors text-[14px] md:text-[15px]">
             <Calendar className="w-5 h-5" /> Event
           </button>
-          <button className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors text-[14px] md:text-[15px]">
+          {/* <button className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors text-[14px] md:text-[15px]">
             <FileText className="w-5 h-5" /> Article
-          </button>
+          </button> */}
         </div>
 
         <Button

@@ -77,6 +77,23 @@ export async function createPost(token: string, text: string, image?: File, isPu
   return resData;
 }
 
+export async function deletePost(token: string, postId:string) {
+ 
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_BACKEND_URL}/feed/delete/${postId}`,
+    {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  );
+
+  const resData = await response.json();
+  if (!response.ok) throw new Error(resData.message || "Failed to delete post");
+  return resData;
+}
+
 export async function postLike(token: string, postId: string) {
   const response = await fetch(
     `${process.env.NEXT_PUBLIC_BACKEND_URL}/feed/like/${postId}`,

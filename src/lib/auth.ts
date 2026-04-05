@@ -28,9 +28,6 @@ async function refreshAccessToken(token: JWT) {
     );
 
     const data = await res.json();
-    console.log("token");
-    console.log(token);
-    console.log(data);
 
     if (!res.ok) throw data;
 

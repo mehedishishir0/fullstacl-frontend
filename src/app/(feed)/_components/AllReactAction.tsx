@@ -1,19 +1,25 @@
 "use client";
-import { Heart, Share2 } from "lucide-react";
+import { Heart, MessageCircle, Share2 } from "lucide-react";
 import React from "react";
-import CommentModal from "./CommentModal";
 import type { Post } from "@/types/allPostDataType";
 import { usePostLike } from "@/hooks/Apicalling";
 import { useSession } from "next-auth/react";
 
-const AllReactAction = ({ post }: { post: Post }) => {
+const AllReactAction = ({
+  post,
+  setOpenComment,
+  openComment
+}: {
+  post: Post;
+  setOpenComment: (open: boolean) => void;
+  openComment:boolean
+}) => {
   const { data: session } = useSession();
   const user = session?.user as { id: string };
   const token = (session?.user as { accessToken: string })?.accessToken;
-
   const postLikeMutation = usePostLike(token);
 
-  const isLiked = post.likes.includes(user.id);
+  const isLiked = post.likes.some((u) => u._id === user?.id);
 
   return (
     <div>
@@ -28,7 +34,10 @@ const AllReactAction = ({ post }: { post: Post }) => {
           Love
         </button>
 
-        <CommentModal post={post} />
+        <button onClick={()=> setOpenComment(!openComment)} className="flex-1 flex items-center justify-center gap-2 py-3 hover:bg-white/5 rounded-lg transition-colors">
+          <MessageCircle className="w-5 h-5" />
+          Comment
+        </button>
 
         <button className="flex-1 flex items-center justify-center gap-2 py-3 hover:bg-white/5 rounded-lg transition-colors">
           <Share2 className="w-5 h-5" /> Share

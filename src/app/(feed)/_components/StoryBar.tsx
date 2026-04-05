@@ -50,7 +50,6 @@ export default function StoryBar() {
       className="w-full mb-6"
     >
       <CarouselContent className="gap-4">
-        {/* Your Story */}
         <CarouselItem className="basis-[120px] md:basis-[140px]">
           <div className="relative h-[170px] md:h-[180px] rounded-[15px] overflow-hidden cursor-pointer group shadow-sm">
             <div className="h-[70%] overflow-hidden">
@@ -88,7 +87,6 @@ export default function StoryBar() {
                 alt={story.name}
               />
 
-     
               <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
               <div className="absolute top-3 left-3 p-0.5 bg-blue-500 rounded-full border-2 border-white">

@@ -9,10 +9,10 @@ export type Post = {
   user: User;
   text: string;
   image: Image | null;
-  likes: string[];
+  likes: User[];
   isPublic: boolean;
-  createdAt: string; // ISO date string
-  updatedAt: string; // ISO date string
+  createdAt: string; 
+  updatedAt: string; 
   __v: number;
   comments: Comment[];
 };
@@ -33,9 +33,9 @@ export type Comment = {
   post: string;
   user: User;
   text: string;
-  likes: string[];
-  createdAt: string; // ISO date string
-  updatedAt: string; // ISO date string
+  likes: User[];
+  createdAt: string;
+  updatedAt: string; 
   __v: number;
   replies: Reply[];
 };
@@ -45,8 +45,7 @@ type Reply = {
   comment: string;
   user: User;
   text: string;
-  likes: string[];
-  createdAt: string; // ISO date string
-  updatedAt: string; // ISO date string
-  __v: number;
+  likes: User[];
+  createdAt: string; 
+  updatedAt: string; 
 };

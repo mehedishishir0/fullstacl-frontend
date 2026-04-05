@@ -6,7 +6,6 @@ import Feed from "./_components/Feed";
 const Page = () => {
   return (
     <div className="flex container mt- h-screen w-full   overflow-hidden  inset-0">
-
       {/* Left Sidebar */}
       <aside className="w-[350px]  h-full no-scrollbar overflow-y-auto hidden lg:block">
         <SidebarLeft />
@@ -23,7 +22,6 @@ const Page = () => {
       <aside className="w-[350px]  h-full no-scrollbar overflow-y-auto hidden xl:block">
         <SidebarRight />
       </aside>
-
     </div>
   );
 };

@@ -1,12 +1,15 @@
-import { MoreHorizontal } from "lucide-react";
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import Image from "next/image";
 import type { Post } from "@/types/allPostDataType";
 import Comment from "./Comment";
 import AllReactAction from "./AllReactAction";
+import LikeShow from "./LikeShow";
+import { useState } from "react";
+import PostControllDropdown from "./PostControllDropdown";
 
 export default function Post({ post }: { post: Post }) {
- 
+  const [openComment,setOpenComment] = useState(false)
+
   return (
     <div className="dark:bg-[#112032] bg-white rounded-[15px] shadow-sm overflow-hidden ">
       {/* Header */}
@@ -38,9 +41,8 @@ export default function Post({ post }: { post: Post }) {
             </div>
           </div>
         </div>
-        <button className="p-2 hover:bg-white/10 rounded-full transition-colors">
-          <MoreHorizontal className="w-5 h-5 text-[#000000] dark:text-[#ffffff]" />
-        </button>
+        <PostControllDropdown postId={post._id} postOwnerId={post?.user?._id}/>
+        
       </div>
 
       <div className="px-6 pb-4">
@@ -62,20 +64,10 @@ export default function Post({ post }: { post: Post }) {
       )}
 
       <div className="px-6 py-4 flex items-center justify-between text-gray-400 text-sm">
-        <div className="flex items-center">
-          <div className="flex -space-x-2 mr-3">
-            {[1, 2].map((i) => (
-              <Avatar key={i} className="w-7 h-7 borde-1 border-white">
-                <AvatarImage src={`https://i.pravatar.cc/100?img=${i + 10}`} />
-              </Avatar>
-            ))}
-            <div className="w-7 h-7 rounded-full bg-[#1890FF] border-1 z-10  border-white flex items-center justify-center text-[15px] font-bold text-white">
-              {`${post.likes.length}`}
-            </div>
-          </div>
-        </div>
+       <LikeShow post={post}/>
+      
         <div className="flex gap-4">
-          <span>
+          <span className="cursor-pointer" onClick={() =>  setOpenComment(!openComment)}>
             {post.comments.reduce(
               (total, comment) => total + 1 + comment.replies.length,
               0,
@@ -86,9 +78,11 @@ export default function Post({ post }: { post: Post }) {
         </div>
       </div>
 
-      <AllReactAction post={post} />
-
-      <Comment post={post} />
+      <AllReactAction openComment={openComment}  setOpenComment={setOpenComment}  post={post} />
+     {
+      openComment &&  <Comment post={post} />
+     }
+    
     </div>
   );
 }

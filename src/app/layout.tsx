@@ -15,8 +15,11 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
-  title: 'Full Stack Developer Online Task',
-  description: 'Next.js + Tailwind + MongoDB project',
+  title: 'Full Stack Developer Online Task Mehedi Hasan Shishir',
+  description: '',
+  icons:{
+    icon:"/images/logo-copy.svg"
+  }
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

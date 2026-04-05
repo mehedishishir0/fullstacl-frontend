@@ -1,4 +1,3 @@
-// components/SidebarLeft.tsx
 import {
   PlayCircle,
   BarChart2,
@@ -34,7 +33,7 @@ const suggestedPeople = [
   {
     name: "Ryan Roslansky",
     role: "CEO of Linkedin",
-   img: "/images/people2.png",
+    img: "/images/people2.png",
   },
   {
     name: "Dylan Field",
@@ -58,14 +57,13 @@ const events = [
     day: "10",
     month: "Jul",
     title: "No more terrorism no more cry",
-    going: "25 People Going", // Second one in your image doesn't show footer yet
+    going: "25 People Going",
   },
 ];
 
 export default function SidebarLeft() {
   return (
     <div className="flex flex-col mt-5 gap-5 w-full pb-10">
-      {/* 1. Explore Section */}
       <Card className=" ring-0  p-4 bg-[#FFFFFF] dark:bg-[#112032]">
         <h2 className="text-xl font-bold mb-3 px-2 dark:text-white">Explore</h2>
         <nav className="flex flex-col gap-1">
@@ -87,7 +85,6 @@ export default function SidebarLeft() {
         </nav>
       </Card>
 
-      {/* 2. Suggested People Section */}
       <Card className="border-none  p-5 bg-[#FFFFFF] dark:bg-[#112032]">
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-xl font-bold">Suggested People</h2>
@@ -131,9 +128,7 @@ export default function SidebarLeft() {
         </div>
       </Card>
 
-      {/* 3. Events Section */}
       <Card className="border-none shadow-sm p-5 bg-[#FFFFFF] mb-20 dark:bg-[#112032] w-[350px]">
-        {/* Header */}
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-2xl font-bold dark:text-white">Events</h2>
           <Button
@@ -146,8 +141,10 @@ export default function SidebarLeft() {
 
         <div className="flex flex-col gap-10 ">
           {events.map((event) => (
-            <div key={event.id} className="flex flex-col shadow-md py-4 dark:shadow-none">
-              {/* Image Container */}
+            <div
+              key={event.id}
+              className="flex flex-col shadow-md py-4 dark:shadow-none"
+            >
               <div className="relative w-full h-[180px] rounded-xl overflow-hidden mb-4">
                 <Image
                   src={event.image}
@@ -157,9 +154,7 @@ export default function SidebarLeft() {
                 />
               </div>
 
-              {/* Content Section */}
               <div className="flex gap-4 items-start mb-5">
-                {/* Green Date Badge */}
                 <div className="bg-[#10d876] min-w-[55px] ml-4 h-[55px] rounded-xl flex flex-col items-center justify-center text-white shadow-lg shadow-[#10d876]/20">
                   <span className="text-xl font-bold leading-none">
                     {event.day}
@@ -167,7 +162,6 @@ export default function SidebarLeft() {
                   <span className="text-sm font-semibold">{event.month}</span>
                 </div>
 
-                {/* Title */}
                 <h3 className="text-[18px] font-bold leading-tight dark:text-white pt-1">
                   {event.title}
                 </h3>

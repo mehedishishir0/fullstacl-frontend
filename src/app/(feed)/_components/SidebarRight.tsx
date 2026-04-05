@@ -18,7 +18,7 @@ export default function SidebarRight() {
   return (
     <div className="flex flex-col gap-5 mt-5 w-full pb-10">
       
-      {/* 1. You Might Like Card */}
+  
       <Card className="border-none  dark:bg-[#112032] bg-white  p-5 ">
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-xl font-bold text-textPrimary">You Might Like</h2>
@@ -59,7 +59,6 @@ export default function SidebarRight() {
         </div>
       </Card>
 
-      {/* 2. Your Friends Section */}
       <Card className="border-none shadow-custom p-5 dark:bg-[#112032] bg-white">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-xl font-bold text-textPrimary">
@@ -71,7 +70,6 @@ export default function SidebarRight() {
           </Button>
         </div>
 
-        {/* Search Bar */}
         <div className="relative mb-6">
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-textMuted" />
 
@@ -81,7 +79,6 @@ export default function SidebarRight() {
           />
         </div>
 
-        {/* Friends List */}
         <div className="flex flex-col gap-6">
           {friendsList.map((friend, idx) => (
             <div
@@ -108,7 +105,6 @@ export default function SidebarRight() {
                 </div>
               </div>
 
-              {/* Status */}
               <div className="flex items-center">
                 {friend.online ? (
                   <div className="w-2.5 h-2.5 bg-[#0ACF83] rounded-full border border-white" />
@@ -122,7 +118,6 @@ export default function SidebarRight() {
           ))}
         </div>
       </Card>
-
     </div>
   );
 }
