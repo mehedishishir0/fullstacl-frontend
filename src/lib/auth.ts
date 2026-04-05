@@ -129,7 +129,6 @@ export const authOptions: NextAuthOptions = {
           );
 
           const data = await res.json();
-
           if (!data?.success || !data?.data?.user) return false;
           const u = user as MyUser;
           u.id = data.data.user._id;
