@@ -33,16 +33,10 @@ export default function Navbar() {
   const logoutMutation = useLogout(token);
 
   const handelLogOut = () => {
-    logoutMutation.mutate(undefined, {
-      onSuccess: () => {
-        signOut();
-      },
-      onError: (err) => {
-        console.error("Logout failed:", err);
-      },
-    });
+    logoutMutation.mutate()
+    signOut({callbackUrl:"/login"})
   };
-
+  
   return (
     <>
       <header className="h-[70px] bg-white dark:bg-[#112032] flex items-center px-4 md:px-6 sticky top-0 z-50">
